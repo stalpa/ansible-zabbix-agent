@@ -1,7 +1,7 @@
 ---
 # list of packages to install
 zabbix_agent_packages:
-  - zabbix-agent
+- zabbix-agent
 
 # name of the service
 zabbix_agent_service: zabbix-agent

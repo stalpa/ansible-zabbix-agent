@@ -2,7 +2,7 @@
 # defaults file for zabbix-agent
 
 zabbix_agent_config_server:
-  - 172.16.20.15
+- 172.31.19.245
 
 zabbix_agent_config_start_agents: 1
 
