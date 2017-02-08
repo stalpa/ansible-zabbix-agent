@@ -2,7 +2,7 @@
 # Common setup tasks
 - include: setup.yml
 
-# Common configuration tasks tasks
+# Common configuration tasks
 - include: config.yml
 
 
