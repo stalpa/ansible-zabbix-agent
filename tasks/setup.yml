@@ -21,11 +21,6 @@
   tags:
      - zbx
 
-- name: remove Old Zabbix version
-  yum: name=zabbix-agent state=absent
-  tags: 
-     - zbx
-
 - name: update zabbix
   yum: name=zabbix-agent state=latest
   notify:
