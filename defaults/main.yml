@@ -1,0 +1,12 @@
+---
+# defaults file for zabbix-agent
+
+zabbix_agent_config_server:
+  - 172.16.20.15
+
+zabbix_agent_config_start_agents: 1
+
+# rest of the host settings
+zabbix_agent_pkg_state: present
+zabbix_agent_service_enabled: yes
+zabbix_agent_service_state: started

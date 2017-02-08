@@ -1,0 +1,8 @@
+---
+# Common setup tasks
+- include: setup.yml
+
+# Common configuration tasks tasks
+- include: config.yml
+
+
