@@ -1,25 +1,26 @@
 ---
-- name: "installing repository gpg"
-  action: rpm_key state=present key=http://repo.zabbix.com/RPM-GPG-KEY-ZABBIX
-  tags:
-     - zbx
+- name: "Installing repository gpg"
+  rpm_key:
+     state: present
+     key: "{{ zabbix_RpmGpgKey }}"
 
-- name: "installing repository rpm"
-  action: yum pkg={{item}} state=present 
+- name: "Installing repository rpm"
+  yum: 
+     pkg: "{{ item }}"
+     state: present 
   with_items:
-  - http://repo.zabbix.com/zabbix/3.2/rhel/6/x86_64/zabbix-release-3.2-1.el6.noarch.rpm
-  tags:
-     - zbx
+    - "{{ zabbix_Repository }}"
 
-- name: update zabbix
-  yum: name=zabbix-agent state=latest update_cache=yes
+- name: "Update zabbix"
+  yum: 
+     name: zabbix-agent
+     state: latest
+     update_cache: yes
   notify:
-  - restart zabbix-agent
-  tags:
-     - zbx
+    - restart zabbix-agent
 
-- name: Ensure zabbix-agent started/stopped
-  service: name={{ zabbix_agent_service }} state={{ zabbix_agent_service_state }} enabled={{ zabbix_agent_service_enabled }}
-  tags:
-     - zbx
-
+- name: "Ensure zabbix-agent started/stopped"
+  service: 
+     name: "{{ zabbix_agent_service }}"
+     state: "{{ zabbix_agent_service_state }}" 
+     enabled: "{{ zabbix_agent_service_enabled }}"

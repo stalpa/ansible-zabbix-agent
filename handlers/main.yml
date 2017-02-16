@@ -1,7 +1,6 @@
-
 ---
 - name: restart zabbix-agent
-  service: name={{ zabbix_agent_service }} state=restarted
-  tags:
-     - zbx
+  service: 
+     name: "{{ zabbix_agent_service }}"
+     state: restarted
 

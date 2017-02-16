@@ -7,6 +7,4 @@
      group: "{{ zabbix_agent_user }}"
      mode: 0640
   notify:
-  - restart zabbix-agent
-  tags: 
-     - zbx
+    - restart zabbix-agent
