@@ -1,8 +1,8 @@
 ---
-# Common setup tasks
-- include: setup.yml
+- name: "Common setup tasks"
+  include: setup.yml
 
-# Common configuration tasks
-- include: config.yml
+- name: "Common configuration tasks"
+  include: config.yml
 
 

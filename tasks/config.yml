@@ -1,6 +1,11 @@
 ---
 - name: "Configure zabbix-agent"
-  template: src=zabbix_agentd.conf.j2 dest={{ zabbix_agent_dir_etc }}/zabbix_agentd.conf owner=root group={{ zabbix_agent_user }} mode=0640
+  template: 
+     src: zabbix_agentd.conf.j2
+     dest: "{{ zabbix_agent_dir_etc }}/zabbix_agentd.conf" 
+     owner: root
+     group: "{{ zabbix_agent_user }}"
+     mode: 0640
   notify:
   - restart zabbix-agent
   tags: 
