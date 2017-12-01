@@ -4,7 +4,7 @@
 zabbix_agent_config_server:
 - 172.31.19.245
 
-zabbix_agent_config_start_agents: 1
+zabbix_agent_config_start_agents: 0
 
 # rest of the host settings
 zabbix_agent_pkg_state: present
