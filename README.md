@@ -4,7 +4,7 @@ role name : ansible-zabbix-agent
 
 playbook steps:
 
-* Install zabbix-agent 3.2 setup.yml
+* Install zabbix-agent 3.4 setup.yml
 * Configure zabbix-agent config.yml
 
 Actions:

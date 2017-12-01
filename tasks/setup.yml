@@ -2,14 +2,14 @@
 - name: "Installing repository gpg"
   rpm_key:
      state: present
-     key: "{{ zabbix_RpmGpgKey }}"
+     key: "{{ zabbix_rpmgpgkey }}"
 
 - name: "Installing repository rpm"
   yum: 
      pkg: "{{ item }}"
      state: present 
   with_items:
-    - "{{ zabbix_Repository }}"
+    - "{{ zabbix_repository }}"
 
 - name: "Update zabbix"
   yum: 
