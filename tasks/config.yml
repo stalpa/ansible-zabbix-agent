@@ -5,8 +5,8 @@
 - name: Obtain EC2 tags for this instance
   local_action:
     module: ec2_tag
-    region: '{{ ansible_ec2_placement_region }}'
-    resource: '{{ ansible_ec2_instance_id }}'
+    region: "{{ ansible_ec2_placement_region }}"
+    resource: "{{ ansible_ec2_instance_id }}"
     state: list
   register: ec2_tags
 
