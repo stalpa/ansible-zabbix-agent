@@ -1,0 +1,79 @@
+UserParameter=kernel.check,uname -r
+##Check if filesystems cramfs|freevxfs|jffs2|hfs|hfsplus|squashfs|udf|FAT are disabled
+UserParameter=cis.level1.filesystems.state,lsmod | egrep 'cramfs|freevxfs|jffs2|hfs|hfsplus|squashfs|udf|FAT' | awk 'NR==1{print "1"} END { if (!NR) print "0"}'
+#UserParameter=cis.level1.partition.state[*],mount | awk '{print $3}' | egrep '${1}$' | awk 'NR==1{print "0"} END { if (!NR) print "1"}'
+UserParameter=cis.level1.partition.state[*],/etc/zabbix/script/partitions.sh $1
+UserParameter=cis.level1.partition.options.state[*],mount | egrep '$1' | egrep 'nosuid.*nodev.*noexec.' | awk 'NR==1{print "0"} END { if (!NR) print "1"}'
+UserParameter=cis.level1.gpgcheck.state,grep ^gpgcheck /etc/yum.conf | awk '$0=="gpgcheck=1"{print "0"} END { if ($0=="gpgcheck=0") print "1"}'
+UserParameter=cis.level1.rpminstalled.state[*],rpm -qa | grep '$1' | awk 'NR==1{print "0"} END { if (!NR) print "1"}'
+UserParameter=cis.level1.rpmnotinstalled.state[*],rpm -qa | grep '$1' | awk 'NR==1{print "1"} END { if (!NR) print "0"}'
+#$UserParameter=cis.level1.bootloaderpermissions.state,stat /boot/grub/menu.lst | grep "Access: (" | awk '$0=="Access: (0600/-rw-------)  Uid: (    0/    root)   Gid: (    0/    root)"{print "0"} END { if ($0!="Access: (0600/-rw-------)  Uid: (    0/    root)   Gid: (    0/    root)") print "1"}'
+UserParameter=cis.level1.statperm.state[*],/etc/zabbix/script/statperm.sh $1
+UserParameter=cis.level1.interactiveboot.state,grep "^PROMPT=" /etc/sysconfig/init | awk '$0=="PROMPT=no"{print "0"} END { if ($0!="PROMPT=no") print "1"}'
+UserParameter=cis.level1.coredumps.state, grep "hard core" /etc/security/limits.conf | awk '$0=="* hard core 0"{print "0"} END { if ($0!="* hard core 0") print "1"}'
+UserParameter=cis.level1.aslr.state,sysctl kernel.randomize_va_space | awk '$0=="kernel.randomize_va_space = 2"{print "0"} END { if ($0!="kernel.randomize_va_space = 2") print "1"}' 
+UserParameter=cis.level1.warningbanner.state[*],egrep '(\\v|\\r|\\m|\\s)' '$1' | awk 'NR==1{print "1"} END { if (!NR) print "0"}'
+UserParameter=cis.level1.permission.state[*],/etc/zabbix/script/permissions.sh $1
+UserParameter=cis.level1.checkupdate.state,yum check-update | awk 'p;/^$/{p=1}' | awk 'NR==1{print "1"} END { if (!NR) print "0"}'
+UserParameter=cis.level1.inetd.state[*],chkconfig --list | grep '$1' | awk 'NR==1{print "1"} END { if (!NR) print "0"}'
+UserParameter=cis.level1.servernotrunning.state[*],/etc/zabbix/script/chkconfig.sh $1
+UserParameter=cis.level1.serverrunning.state[*],/etc/zabbix/script/chkconfigrun.sh $1
+UserParameter=cis.level1.netparamdisabled.state[*],/etc/zabbix/script/netparam.sh $1
+UserParameter=cis.level1.netparamenabled.state[*],/etc/zabbix/script/netparam_enabled.sh $1
+UserParameter=cis.level1.ip6disabled.state,modprobe -c | egrep "ipv6 disable=1" | awk '$0=="options ipv6 disable=1" {print "0"} END { if ($0!="options ipv6 disable=1") print "1"}'
+UserParameter=cis.level1.hostsconf.state[*],cat '$1' | egrep "ALL:" | awk 'NR==1{print "0"} END { if (!NR) print "1"}'
+UserParameter=cis.level1.uncommonnet.state[*],/etc/zabbix/script/uncommon.sh $1
+UserParameter=cis.level1.iptablesdrop.state,sudo iptables -L | egrep "policy ACCEPT" | awk 'NR==1{print "1"} END { if (!NR) print "0"}'
+UserParameter=cis.level2.auditlogs.state,sudo egrep "^space_left_action|action_mail_acct|admin_space_left_action|max_log_file_action" /etc/audit/auditd.conf | awk '{print $3}' ORS='' | awk '$0=="keep_logsemailroothalt"{print "0"} END { if ($0!="keep_logsemailroothalt") print "1"}'
+UserParameter=cis.level2.audit1.state,/etc/zabbix/script/audit1.sh
+UserParameter=cis.level2.eventscollect.state,sudo grep time-change /etc/audit/audit.rules | awk 'NR==5{print "0"} END { if (NR!=5) print "1"}'
+UserParameter=cis.level2.eventsuser.state,sudo grep identity /etc/audit/audit.rules | awk 'NR==5{print "0"} END { if (NR!=5) print "1"}'
+UserParameter=cis.level2.eventnetwork.state,sudo grep system-locale /etc/audit/audit.rules | awk 'NR==5{print "0"} END { if (NR!=5) print "1"}'
+UserParameter=cis.level2.eventmac.state,sudo grep MAC-policy /etc/audit/audit.rules | awk 'NR==1{print "0"} END { if (NR!=1) print "1"}'
+UserParameter=cis.level2.eventlogin.state,sudo grep logins /etc/audit/audit.rules | awk 'NR==2{print "0"} END { if (NR!=2) print "1"}'
+UserParameter=cis.level2.eventsession.state,sudo grep session /etc/audit/audit.rules | awk 'NR==3{print "0"} END { if (NR!=3) print "1"}'
+UserParameter=cis.level2.eventcontrolperm.state,sudo grep perm_mod /etc/audit/audit.rules | awk 'NR==6{print "0"} END { if (NR!=6) print "1"}'
+UserParameter=cis.level2.eventfileaccess.state,sudo grep access /etc/audit/audit.rules | awk 'NR==4{print "0"} END { if (NR!=4) print "1"}'
+UserParameter=cis.level2.eventmount.state,sudo grep mounts /etc/audit/audit.rules | awk 'NR==2{print "0"} END { if (NR!=2) print "1"}'
+UserParameter=cis.level2.eventfiledel.state,sudo grep delete /etc/audit/audit.rules | awk 'NR==2{print "0"} END { if (NR!=2) print "1"}'
+UserParameter=cis.level2.eventsudoers.state,sudo grep scope /etc/audit/audit.rules | awk 'NR==2{print "0"} END { if (NR!=2) print "1"}'
+UserParameter=cis.level2.eventactions.state,sudo grep actions /etc/audit/audit.rules | awk 'NR==1{print "0"} END { if (NR!=1) print "1"}'
+UserParameter=cis.level2.eventkernmodule.state,sudo grep modules /etc/audit/audit.rules | awk 'NR==4{print "0"} END { if (NR!=4) print "1"}'
+UserParameter=cis.level2.auditimmutable.state,sudo grep "^\s*[^#]" /etc/audit/audit.rules | tail -1 | awk '$0=="-e 2"{print "0"} END { if ($0!="-e 2") print "1"}'
+UserParameter=cis.level2.rsyslogperm.state,grep "^\$FileCreateMode 0640" /etc/rsyslog.conf | awk '$0=="$FileCreateMode 0640"{print "0"} END { if ($0!="$FileCreateMode 0640") print "1"}'
+UserParameter=cis.level1.rsyslogaccept.state,grep -e '^$InputTCPServerRun 514' -e '^$ModLoad imtcp.so' /etc/rsyslog.conf | awk 'NR==2{print "0"} END { if (NR!=2) print "1"}'
+UserParameter=cis.level1.logfilesperm.state,stat -c '%A %a %n' /var/log/* | grep -v "drw" | awk '{print $2}' | awk 'END { if ($0=="600" || "640" || "700" || "740") print "0"; else print "1"}'
+UserParameter=cis.level1.sshconfset.state[*],/etc/zabbix/script/sshconf.sh $1
+UserParameter=cis.level1.pampassreq.state,/etc/zabbix/script/pampassreq.sh
+UserParameter=cis.level1.passworduse.state[*],egrep '^password\s+sufficient\s+pam_unix.so' '$1' | egrep remember=5 | awk 'NR==1{print "0"} END { if (!NR) print "1"}'
+UserParameter=cis.level1.passwordhash.state[*],egrep '^password\s+sufficient\s+pam_unix.so' '$1' | egrep sha512 | awk 'NR==1{print "0"} END { if (!NR) print "1"}'
+UserParameter=cis.level1.passwordexpiration.state,egrep ^PASS_MAX_DAYS  /etc/login.defs | column -t | cut -d ' ' -f3 | awk '$0<=90 {print "0"} END { if ($0>90) print "1"}'
+UserParameter=cis.level1.passwordminchange.state,egrep ^PASS_MIN_DAYS  /etc/login.defs | column -t | cut -d ' ' -f3 | awk '$0>=7 {print "0"} END { if ($0<7) print "1"}'
+UserParameter=cis.level1.passwordminwarn.state,egrep ^PASS_WARN_AGE  /etc/login.defs | column -t | cut -d ' ' -f3 | awk '$0>=7 {print "0"} END { if ($0<7) print "1"}'
+UserParameter=cis.level1.passwordinactive.state,sudo useradd -D | egrep INACTIVE | cut -d= -f2 | awk '$0<=30 {print "0"} END { if ($0>30) print "1"}'
+UserParameter=cis.level1.nonloginaccounts.state,egrep -v "^\+" /etc/passwd | awk -F: '($1!="root" && $1!="sync" && $1!="shutdown" && $1!="halt" && $3<500 && $7!="/sbin/nologin" && $7!="/bin/false")  NR==0 {print "0"} END { if (NR>=0) print "1"}'
+UserParameter=cis.level1.defaultrootgroup.state,egrep "^root:" /etc/passwd | cut -f4 -d: | awk '$0==0{print "0"} END { if ($0!=0) print "1"}'
+UserParameter=cis.level1.userumask.state,egrep "umask 027" /etc/bashrc /etc/profile | awk 'NR>1{print "0"} END { if (!NR) print "1"}'
+UserParameter=cis.level1.surestricted.state,egrep '^auth\s+required\s+pam_wheel.so' /etc/pam.d/su | awk 'NR==1{print "0"} END { if (NR==0) print "1"}' 
+UserParameter=cis.level1.noworldwritablefiles.state,df --local -P | awk {'if (NR!=1) print $6'} | sudo xargs -I '{}' find '{}' -xdev -type f -perm -0002 | awk 'NR==1{print "1"} END { if (!NR) print "0"}'
+UserParameter=cis.level1.unownedfiles.state,df --local -P | awk {'if (NR!=1) print $6'} | sudo xargs -I '{}' find '{}' -xdev -nouser | awk 'NR==1{print "1"} END { if (!NR) print "0"}'
+UserParameter=cis.level1.ungroupedfiles.state,df --local -P | awk {'if (NR!=1) print $6'} | sudo xargs -I '{}' find '{}' -xdev -nogroup | awk 'NR==1{print "1"} END { if (!NR) print "0"}'
+UserParameter=cis.level1.passwordnotempty.state,sudo cat /etc/shadow | awk -F: '($2 == "" ) { print $1 " does not have a password "}' | awk 'NR==1{print "1"} END { if (!NR) print "0"}'
+UserParameter=cis.level1.nolegacyentries.state[*],sudo egrep '^+:' '$1' | awk 'NR==1{print "1"} END { if (!NR) print "0"}'
+UserParameter=cis.level1.onlyroot.state,sudo cat /etc/passwd | awk -F: '($3 == 0) { print $1 }' | awk '$0=="root"{print "0"} END { if ($0!="root") print "1"}'
+UserParameter=cis.level1.rootpath.state,/etc/zabbix/script/rootpath.sh | awk 'NR==1{print "1"} END { if (!NR) print "0"}'
+UserParameter=cis.level1.homedir.state,/etc/zabbix/script/homedir.sh | awk 'NR==1{print "1"} END { if (!NR) print "0"}'
+UserParameter=cis.level1.homedirperm.state,/etc/zabbix/homedirperm.sh | awk 'NR==1{print "1"} END { if (!NR) print "0"}'
+UserParameter=cis.level1.homedirown.state,/etc/zabbix/script/homedirown.sh | awk 'NR==1{print "1"} END { if (!NR) print "0"}'
+UserParameter=cis.level1.dotfiles.state,/etc/zabbix/script/dotfiles.sh | awk 'NR==1{print "1"} END { if (!NR) print "0"}'
+UserParameter=cis.level1.forwardfiles.state,/etc/zabbix/script/forwardfiles.sh | awk 'NR==1{print "1"} END { if (!NR) print "0"}'
+UserParameter=cis.level1.netrcfiles.state,/etc/zabbix/script/netrcfiles.sh | awk 'NR==1{print "1"} END { if (!NR) print "0"}'
+UserParameter=cis.level1.netrcgroup.state,/etc/zabbix/script/netrcgroup.sh | awk 'NR==1{print "1"} END { if (!NR) print "0"}'
+UserParameter=cis.level1.rhostsfiles.state,/etc/zabbix/script/rhostsfiles.sh | awk 'NR==1{print "1"} END { if (!NR) print "0"}'
+UserParameter=cis.level1.groupsexist.state,/etc/zabbix/script/groupsexist.sh  | awk 'NR==1{print "1"} END { if (!NR) print "0"}'
+UserParameter=cis.level1.noduplicateuid.state,/etc/zabbix/script/noduplicateuid.sh | awk 'NR==1{print "1"} END { if (!NR) print "0"}'
+UserParameter=cis.level1.noduplicategid.state,/etc/zabbix/script/noduplicategid.sh | awk 'NR==1{print "1"} END { if (!NR) print "0"}'
+UserParameter=cis.level1.noduplicateuser.state,/etc/zabbix/script/noduplicateuser.sh | awk 'NR==1{print "1"} END { if (!NR) print "0"}'
+UserParameter=cis.level1.noduplicategroup.state,/etc/zabbix/script/noduplicategroup.sh | awk 'NR==1{print "1"} END { if (!NR) print "0"}'
+UserParameter=awsstats.discovery[*],. /usr/local/lib/zabbix-aws-status/bin/activate && /usr/local/bin/zabbix-aws-status.py -r '$1' -o '$2' discover $3
+

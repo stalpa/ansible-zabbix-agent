@@ -30,3 +30,33 @@ zabbix_repository: http://repo.zabbix.com/zabbix/3.4/rhel/6/x86_64/zabbix-releas
 zabbix_rpmgpgkey: http://repo.zabbix.com/RPM-GPG-KEY-ZABBIX
 
 server_active: 10.42.1.145
+
+#
+# CIS Scripts
+cis_scripts:
+   - audit1.sh
+   - homedirperm.sh
+   - noduplicategid.sh                
+   - rootpath.sh
+   - chkconfigrun.sh                  
+   - homedir.sh                       
+   - noduplicategroup.sh             
+   - chkconfig.sh
+   - noduplicateuid.sh  
+   - sshconf.sh
+   - cron.sh      
+   - noduplicateuser.sh               
+   - statperm.sh
+   - dotfiles.sh                      
+   - netparam_enabled.sh              
+   - pampassreq.sh                    
+   - uncommon.sh
+   - forwardfiles.sh                  
+   - netparam.sh                      
+   - partitions.sh                  
+   - groupsexist.sh                   
+   - netrcfiles.sh                    
+   - permissions.sh           
+   - homedirown.sh                    
+   - netrcgroup.sh                    
+   - rhostsfiles.sh

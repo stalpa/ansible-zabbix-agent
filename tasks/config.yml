@@ -1,4 +1,5 @@
 ---
+
 - name: Gather EC2 instance metadata
   action: ec2_metadata_facts
 
@@ -10,10 +11,39 @@
     state: list
   register: ec2_tags
 
+
 - name: "Configure zabbix-agent"
   template: 
      src: zabbix_agentd.conf.j2
      dest: "{{ zabbix_agent_dir_etc }}/zabbix_agentd.conf" 
+     owner: root
+     group: "{{ zabbix_agent_user }}"
+     mode: 0640
+  notify:
+    - restart zabbix-agent
+
+- name: "Creates '/etc/zabbix/script' directory"  
+  file:
+    path: /etc/zabbix/script
+    state: directory
+    owner: root
+    group: "{{ zabbix_agent_user }}"
+    mode: 0640
+
+- name: "Copy CIS scripts"
+  template:
+    src: script/"{{ item }}"
+    dest: /etc/zabbix/script/"{{ item }}"
+    owner: root
+    group: "{{ zabbix_agent_user }}"
+    mode: 0640
+  with_items:
+    - "{{ cis_scripts }}"
+
+- name: "Configure agent for CIS"
+  template:
+     src: zabbix_agentd.conf.j2
+     dest: "{{ zabbix_agent_dir_etc }}/zabbix_agentd.d/userparam_cis.conf"
      owner: root
      group: "{{ zabbix_agent_user }}"
      mode: 0640
