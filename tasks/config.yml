@@ -32,8 +32,8 @@
 
 - name: "Copy CIS scripts"
   template:
-    src: script/"{{ item }}"
-    dest: /etc/zabbix/script/"{{ item }}"
+    src: "{{ item }}"
+    dest: /etc/zabbix/script/{{ item }}
     owner: root
     group: "{{ zabbix_agent_user }}"
     mode: 0640
@@ -42,7 +42,7 @@
 
 - name: "Configure agent for CIS"
   template:
-     src: zabbix_agentd.conf.j2
+     src: userparam_cis.conf.j2
      dest: "{{ zabbix_agent_dir_etc }}/zabbix_agentd.d/userparam_cis.conf"
      owner: root
      group: "{{ zabbix_agent_user }}"
