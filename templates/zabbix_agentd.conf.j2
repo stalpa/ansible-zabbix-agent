@@ -148,7 +148,7 @@ ServerActive={{ server_active }}
 # Default:
 # Hostname=
 
-#Hostname=Zabbix server
+Hostname={{ ec2_tags.tags.Name }}
 
 ### Option: HostnameItem
 #	Item used for generating Hostname if it is undefined. Ignored if Hostname is defined.
@@ -156,7 +156,7 @@ ServerActive={{ server_active }}
 #
 # Mandatory: no
 # Default:
-HostnameItem=system.hostname
+# HostnameItem=system.hostname
 
 ### Option: HostMetadata
 #	Optional parameter that defines host metadata.
@@ -398,5 +398,3 @@ LoadModulePath=${libdir}/modules
 # Mandatory: no
 # Default:
 # TLSPSKFile=
-
-
